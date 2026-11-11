@@ -109,14 +109,17 @@ function Editor({ f, setF, cats, canWrite, onClose }: { f: F; setF: (f: F) => vo
     if (!file || !f.id) return;
     await run(async () => {
       const blob = await compressImage(file);
-      const path = `${f.id}/${crypto.randomUUID()}.jpg`;
+      const thumb = await compressImage(file, 480, 0.7); // vignette légère pour les listes de l'app
+      const name = crypto.randomUUID();
+      const path = `${f.id}/${name}.jpg`;
       check(await sb.storage.from('place-photos').upload(path, blob, { contentType: 'image/jpeg' }));
+      check(await sb.storage.from('place-photos').upload(`${f.id}/${name}_t.jpg`, thumb, { contentType: 'image/jpeg' }));
       check(await sb.from('place_photos').insert({ place_id: f.id, storage_path: path, credit: credit.trim() || null, rights_confirmed: rights, sort: (photos.data?.length ?? 0) }));
       photos.reload();
     }, 'Photo ajoutée');
   };
   const removePhoto = (p: Photo) => run(async () => {
-    check(await sb.storage.from('place-photos').remove([p.storage_path]));
+    check(await sb.storage.from('place-photos').remove([p.storage_path, p.storage_path.replace(/\.jpg$/i, '_t.jpg')]));
     check(await sb.from('place_photos').delete().eq('id', p.id));
     photos.reload();
   }, 'Photo supprimée');

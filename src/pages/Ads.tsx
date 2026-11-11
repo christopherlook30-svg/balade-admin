@@ -122,7 +122,7 @@ function AdEditor({ ad, advs, onClose }: { ad: AdRow | null; advs: { id: string;
   const upload = async (file: File | undefined) => {
     if (!file) return;
     await run(async () => {
-      const blob = await compressImage(file, 1200);
+      const blob = await compressImage(file, 800, 0.7);
       const path = `${crypto.randomUUID()}.jpg`;
       check(await sb.storage.from('ad-media').upload(path, blob, { contentType: 'image/jpeg' }));
       setF((p) => ({ ...p, image: path }));
