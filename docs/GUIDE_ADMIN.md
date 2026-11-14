@@ -38,3 +38,21 @@ Les droits sont appliqués par le serveur (règles RLS) : masquer un bouton ne s
 - Le niveau gratuit de Supabase a des limites (taille de base, stockage, mise en pause après inactivité) : à vérifier sur leur page de tarifs.
 - L'app mobile ne lit pas encore ces données : c'est l'étape suivante.
 - Le comptage des affichages est simple (pas de protection avancée contre les faux clics).
+
+## 7. Statut en direct et rapports (migration 0003)
+1. Supabase > SQL Editor > New query : collez le contenu de `supabase/migrations/0003_stats.sql` (seulement ce fichier, une seule fois) puis Run.
+2. Dans l'administration : **Statut en direct** (serveur, appareils en ligne) et **Rapports** (7 jours, 30 jours, ce mois-ci, mois dernier, 90 jours, avec comparaison à la période précédente et export CSV).
+3. Les chiffres viennent de l'app Balade (étape 9 ou plus). Ils sont anonymes : identifiant aléatoire, aucune position. L'utilisateur peut les désactiver dans Profil.
+
+## 8. Thèmes
+Thème clair par défaut. L'icône en haut à droite (soleil, lune, téléphone) change entre clair, sombre et automatique.
+
+## 9. Comptes et avis (migration 0004)
+1. SQL Editor : collez `supabase/migrations/0004_reviews.sql` (après 0001, 0002 et 0003), puis Run.
+2. Supabase > Authentication > Sign In / Providers > **Email** : activé. Pour tester, désactivez « Confirm email » (sinon les nouveaux comptes doivent cliquer un lien reçu par e-mail, et l'envoi gratuit de Supabase est très limité).
+3. Les avis signalés apparaissent dans « À traiter » et « Signalements » avec un bouton **Masquer l'avis**.
+
+## 9. Comptes et avis (migration 0004)
+1. Supabase > SQL Editor : exécutez `supabase/migrations_0003_0004.sql` si vous n'avez encore lancé ni 0003 ni 0004 (sinon seulement `0004_reviews.sql`).
+2. Supabase > Authentication > Providers > Email : pour tester, désactivez « Confirm email » (les e-mails de confirmation intégrés sont très limités). Pour un vrai lancement, configurez un service d'envoi d'e-mails.
+3. Dans l'administration, un avis abusif signalé apparaît dans « À traiter » ; « Masquer l'avis » le retire du public et corrige la note moyenne.

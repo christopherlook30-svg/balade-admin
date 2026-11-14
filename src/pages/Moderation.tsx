@@ -41,12 +41,13 @@ export function Submissions() {
   );
 }
 
-interface Rep { id: string; reason: string; details: string | null; created_at: string; places: { name: string } | null }
-const REASON: Record<string, string> = { wrong_info: 'Information incorrecte', closed: 'Établissement fermé', wrong_price: 'Prix incorrect', other: 'Autre' };
+interface Rep { id: string; reason: string; details: string | null; created_at: string; review_id: string | null; places: { name: string } | null; reviews: { comment: string | null; rating: number; hidden: boolean } | null }
+const REASON: Record<string, string> = { wrong_info: 'Information incorrecte', closed: 'Établissement fermé', wrong_price: 'Prix incorrect', other: 'Autre', abusive_review: 'Avis abusif' };
 export function Reports() {
   const { sb, profile } = useApp();
-  const list = useLoad(async () => (must(await sb.from('reports').select('id,reason,details,created_at,places(name)').eq('resolved', false).order('created_at')) as unknown as Rep[] | null) ?? [], []);
+  const list = useLoad(async () => (must(await sb.from('reports').select('id,reason,details,created_at,review_id,places(name),reviews(comment,rating,hidden)').eq('resolved', false).order('created_at')) as unknown as Rep[] | null) ?? [], []);
   const { run } = useRun();
+  const hide = (r: Rep) => run(async () => { if (r.review_id) check(await sb.from('reviews').update({ hidden: true }).eq('id', r.review_id)); list.reload(); }, 'Avis masqué');
   const done = (id: string) => run(async () => { check(await sb.from('reports').update({ resolved: true, resolved_by: profile.id, resolved_at: new Date().toISOString() }).eq('id', id)); list.reload(); }, 'Signalement traité');
   return (
     <>
@@ -56,8 +57,8 @@ export function Reports() {
         {(list.data ?? []).length === 0 && !list.loading && <p className="muted">Aucun signalement ouvert.</p>}
         {(list.data ?? []).map((r) => (
           <div className="item" key={r.id}>
-            <div><b>{r.places?.name ?? 'Lieu supprimé'}</b> <span className="badge">{REASON[r.reason] ?? r.reason}</span><div className="muted">{fmtDate(r.created_at)}{r.details ? ' · ' + r.details : ''}</div></div>
-            <button className="primary" onClick={() => void done(r.id)}>Marquer traité</button>
+            <div><b>{r.places?.name ?? 'Lieu supprimé'}</b> <span className="badge">{REASON[r.reason] ?? r.reason}</span><div className="muted">{fmtDate(r.created_at)}{r.details ? ' · ' + r.details : ''}</div>{r.reviews && <div className="muted">Avis signalé ({r.reviews.rating}★) : « {r.reviews.comment ?? 'sans commentaire'} »{r.reviews.hidden ? ' — déjà masqué' : ''}</div>}</div>
+            <div className="row" style={{ flex: '0 0 auto' }}>{r.review_id && !r.reviews?.hidden && <button className="danger" onClick={() => void hide(r)}>Masquer l'avis</button>}<button className="primary" onClick={() => void done(r.id)}>Marquer traité</button></div>
           </div>
         ))}
       </div>

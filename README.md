@@ -7,8 +7,8 @@ cd ~
 npm create vite@latest balade-admin -- --template react-ts
 cd balade-admin
 npm install
-cp /sdcard/Download/balade-admin-v2.zip .
-unzip -o balade-admin-v2.zip
+cp /sdcard/Download/balade-admin-v5.zip .
+unzip -o balade-admin-v5.zip
 sh apply-admin.sh
 ```
 Puis suivez `docs/GUIDE_ADMIN.md` (Supabase, compte super administrateur, GitHub Pages).

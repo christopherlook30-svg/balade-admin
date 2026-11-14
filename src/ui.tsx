@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Role } from './lib/permissions.ts';
 
 export interface Profile { id: string; email: string | null; display_name: string | null; role: Role }
-export interface AppCtx { sb: SupabaseClient; profile: Profile; toast: (text: string, bad?: boolean) => void }
+export interface AppCtx { sb: SupabaseClient; profile: Profile; toast: (text: string, bad?: boolean) => void; go: (page: string) => void }
 export const Ctx = createContext<AppCtx | null>(null);
 export function useApp(): AppCtx {
   const c = useContext(Ctx);
