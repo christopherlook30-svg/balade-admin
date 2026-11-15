@@ -3,6 +3,7 @@ import { Loading, check, must, useApp, useLoad, useRun } from '../ui.tsx';
 interface P { id: string; name: string; neighborhood: string | null; city: string }
 interface R { id: string; reason: string; places: { name: string } | null }
 interface S { id: string; proposed_name: string | null; network: string | null }
+interface M { id: string; kind: string; message: string }
 const REASON: Record<string, string> = { wrong_info: 'information incorrecte', closed: 'établissement fermé', wrong_price: 'prix incorrect', other: 'autre problème', abusive_review: 'avis abusif' };
 
 /** Accueil : ce qui attend une décision, avec les actions directement dans la liste. */
@@ -13,10 +14,11 @@ export function Queue() {
     const places = (must(await sb.from('places').select('id,name,neighborhood,city').eq('status', 'pending').order('created_at')) as P[] | null) ?? [];
     const reports = (must(await sb.from('reports').select('id,reason,places(name)').eq('resolved', false).order('created_at')) as unknown as R[] | null) ?? [];
     const subs = (must(await sb.from('source_submissions').select('id,proposed_name,network').eq('status', 'pending').order('created_at')) as S[] | null) ?? [];
-    return { places, reports, subs };
+    const msgs = (must(await sb.from('feedback').select('id,kind,message').eq('handled', false).order('created_at')) as M[] | null) ?? [];
+    return { places, reports, subs, msgs };
   }, []);
   const d = s.data;
-  const total = d ? d.places.length + d.reports.length + d.subs.length : 0;
+  const total = d ? d.places.length + d.reports.length + d.subs.length + d.msgs.length : 0;
   const setStatus = (id: string, status: 'published' | 'draft') => run(async () => { check(await sb.rpc('set_place_status', { p_id: id, p_status: status })); s.reload(); }, status === 'published' ? 'Lieu publié' : 'Lieu renvoyé en brouillon');
   const solve = (id: string) => run(async () => { check(await sb.from('reports').update({ resolved: true, resolved_at: new Date().toISOString() }).eq('id', id)); s.reload(); }, 'Signalement traité');
   return (
@@ -40,6 +42,12 @@ export function Queue() {
         <div className="q" key={x.id}><i className="bar" style={{ background: 'var(--sub)' }} /><div className="c">
           <b>{x.proposed_name ?? 'Sans nom'}</b><span className="muted">Soumission · {x.network ?? 'lien'}</span>
           <div className="acts"><button className="primary" onClick={() => go('subs')}>Examiner</button></div>
+        </div></div>
+      ))}
+      {d?.msgs.map((m) => (
+        <div className="q" key={m.id}><i className="bar" style={{ background: 'var(--sub)' }} /><div className="c">
+          <b>Message de l'app</b><span className="muted">{m.message.slice(0, 80)}{m.message.length > 80 ? '…' : ''}</span>
+          <div className="acts"><button className="primary" onClick={() => go('messages')}>Lire</button></div>
         </div></div>
       ))}
     </>

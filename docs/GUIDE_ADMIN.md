@@ -56,3 +56,7 @@ Thème clair par défaut. L'icône en haut à droite (soleil, lune, téléphone)
 1. Supabase > SQL Editor : exécutez `supabase/migrations_0003_0004.sql` si vous n'avez encore lancé ni 0003 ni 0004 (sinon seulement `0004_reviews.sql`).
 2. Supabase > Authentication > Providers > Email : pour tester, désactivez « Confirm email » (les e-mails de confirmation intégrés sont très limités). Pour un vrai lancement, configurez un service d'envoi d'e-mails.
 3. Dans l'administration, un avis abusif signalé apparaît dans « À traiter » ; « Masquer l'avis » le retire du public et corrige la note moyenne.
+
+## 10. Messages de l'app et page de confidentialité
+1. Supabase > SQL Editor : exécutez `supabase/migrations/0005_feedback.sql` (une fois). Les messages « Signaler un problème » arrivent ensuite dans la page **Messages** et dans **À traiter**.
+2. La page `public/confidentialite.html` est publiée avec l'administration à l'adresse `https://VOTRE-NOM.github.io/balade-admin/confidentialite.html`. Remplacez les passages jaunes « À COMPLÉTER » (éditeur, ville, e-mail de contact) avant la publication de l'app.

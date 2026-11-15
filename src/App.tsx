@@ -10,6 +10,7 @@ import { Status } from './pages/Status.tsx';
 import { Reports } from './pages/Reports.tsx';
 import { Places } from './pages/Places.tsx';
 import { Submissions, Reports as Signalements, Reviews } from './pages/Moderation.tsx';
+import { Messages } from './pages/Messages.tsx';
 import { Ads } from './pages/Ads.tsx';
 import { Categories, Settings, Users } from './pages/Admin.tsx';
 
@@ -22,6 +23,7 @@ const PAGES: PageDef[] = [
   { id: 'status', label: 'Statut en direct', icon: 'ti-activity', need: 'dashboard.view', el: Status },
   { id: 'subs', label: 'Soumissions', icon: 'ti-link', need: 'submissions.view', el: Submissions },
   { id: 'flags', label: 'Signalements', icon: 'ti-flag', need: 'reports.handle', el: Signalements },
+  { id: 'messages', label: 'Messages', icon: 'ti-message', need: 'reports.handle', el: Messages },
   { id: 'reviews', label: 'Avis', icon: 'ti-star', need: 'reviews.moderate', el: Reviews },
   { id: 'cats', label: 'Catégories', icon: 'ti-tags', need: 'categories.manage', el: Categories },
   { id: 'users', label: 'Utilisateurs', icon: 'ti-users', need: 'users.manage', el: Users },
