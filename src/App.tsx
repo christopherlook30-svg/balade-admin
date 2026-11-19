@@ -13,6 +13,7 @@ import { Submissions, Reports as Signalements, Reviews } from './pages/Moderatio
 import { Messages } from './pages/Messages.tsx';
 import { Ads } from './pages/Ads.tsx';
 import { Categories, Settings, Users } from './pages/Admin.tsx';
+import { Premium } from './pages/Premium.tsx';
 
 interface PageDef { id: string; label: string; icon: string; need: Action; el: ComponentType; tab?: boolean }
 const PAGES: PageDef[] = [
@@ -26,6 +27,7 @@ const PAGES: PageDef[] = [
   { id: 'messages', label: 'Messages', icon: 'ti-message', need: 'reports.handle', el: Messages },
   { id: 'reviews', label: 'Avis', icon: 'ti-star', need: 'reviews.moderate', el: Reviews },
   { id: 'cats', label: 'Catégories', icon: 'ti-tags', need: 'categories.manage', el: Categories },
+  { id: 'premium', label: 'Premium', icon: 'ti-diamond', need: 'premium.manage', el: Premium },
   { id: 'users', label: 'Utilisateurs', icon: 'ti-users', need: 'users.manage', el: Users },
   { id: 'settings', label: 'Réglages', icon: 'ti-settings', need: 'settings.manage', el: Settings },
 ];

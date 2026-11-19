@@ -38,6 +38,9 @@ export function Categories() {
 
 const SETTINGS: { key: string; label: string; kind: 'bool' | 'int' | 'text'; help: string }[] = [
   { key: 'ads_enabled', label: 'Publicité activée', kind: 'bool', help: 'Interrupteur général : désactivé, plus aucune annonce n\'est montrée.' },
+  { key: 'admob_enabled', label: 'AdMob activé', kind: 'bool', help: 'AdMob s\'affiche quand aucune annonce directe n\'est disponible (bandeau et plein écran). Les comptes Premium n\'en voient jamais.' },
+  { key: 'admob_banner_unit', label: 'AdMob : identifiant du bandeau', kind: 'text', help: 'Format ca-app-pub-1234567890123456/1234567890 (AdMob → Applications → Blocs d\'annonces). Vide = pas de bandeau AdMob.' },
+  { key: 'admob_interstitial_unit', label: 'AdMob : identifiant du plein écran', kind: 'text', help: 'Même format. Affiché selon les mêmes règles que le pop-up (rare, jamais pendant un itinéraire). Vide = désactivé.' },
   { key: 'popup_max_per_day', label: 'Pop-ups par jour et par personne', kind: 'int', help: 'Recommandé : 1.' },
   { key: 'popup_grace_days', label: 'Jours sans pop-up après l\'installation', kind: 'int', help: 'Recommandé : 2.' },
   { key: 'popup_min_places_opened', label: 'Fiches ouvertes avant un pop-up', kind: 'int', help: 'Recommandé : 2.' },
@@ -63,6 +66,7 @@ export function Settings() {
         const t = String(v).trim();
         if (s.key === 'latest_version' && !/^\d+\.\d+\.\d+$/.test(t)) throw new Error('La version doit ressembler à 1.2.3.');
         if (s.key === 'download_url' && t !== '' && !/^https:\/\/\S+$/i.test(t)) throw new Error('Le lien de téléchargement doit commencer par https://');
+        if (s.key.startsWith('admob_') && t !== '' && !/^ca-app-pub-\d+\/\d+$/.test(t)) throw new Error('Identifiant AdMob invalide : il doit ressembler à ca-app-pub-1234567890123456/1234567890.');
         if (s.key === 'release_notes' && t.length > 200) throw new Error('Les nouveautés ne doivent pas dépasser 200 caractères.');
         check(await sb.from('app_settings').upsert({ key: s.key, value: t, updated_at: new Date().toISOString() }, { onConflict: 'key' }));
         continue;

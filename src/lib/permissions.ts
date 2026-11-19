@@ -2,7 +2,7 @@ export type Role = 'super_admin' | 'admin' | 'moderator' | 'creator' | 'user';
 export type Action =
   | 'places.view' | 'places.write' | 'places.propose' | 'places.moderate'
   | 'submissions.view' | 'submissions.approve' | 'reports.handle' | 'reviews.moderate'
-  | 'ads.manage' | 'categories.manage' | 'settings.manage' | 'users.manage' | 'dashboard.view';
+  | 'ads.manage' | 'premium.manage' | 'categories.manage' | 'settings.manage' | 'users.manage' | 'dashboard.view';
 
 const MATRIX: Record<Action, Role[]> = {
   'places.view': ['super_admin', 'admin', 'moderator', 'creator'],
@@ -14,6 +14,7 @@ const MATRIX: Record<Action, Role[]> = {
   'reports.handle': ['super_admin', 'admin', 'moderator'],
   'reviews.moderate': ['super_admin', 'admin', 'moderator'],
   'ads.manage': ['super_admin', 'admin'],
+  'premium.manage': ['super_admin', 'admin'],
   'categories.manage': ['super_admin', 'admin'],
   'settings.manage': ['super_admin', 'admin'],
   'users.manage': ['super_admin'],
