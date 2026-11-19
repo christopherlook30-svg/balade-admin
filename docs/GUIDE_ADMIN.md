@@ -60,3 +60,8 @@ Thème clair par défaut. L'icône en haut à droite (soleil, lune, téléphone)
 ## 10. Messages de l'app et page de confidentialité
 1. Supabase > SQL Editor : exécutez `supabase/migrations/0005_feedback.sql` (une fois). Les messages « Signaler un problème » arrivent ensuite dans la page **Messages** et dans **À traiter**.
 2. La page `public/confidentialite.html` est publiée avec l'administration à l'adresse `https://VOTRE-NOM.github.io/balade-admin/confidentialite.html`. Remplacez les passages jaunes « À COMPLÉTER » (éditeur, ville, e-mail de contact) avant la publication de l'app.
+
+## 11. Mise à jour de l'app et connexion Google (migration 0006)
+1. Supabase > SQL Editor : exécutez `supabase/migrations/0006_updates_google.sql` (une fois).
+2. Administration > Réglages : section « Mise à jour de l'app » (dernière version, lien de téléchargement, nouveautés). Voir le guide de publication de l'app (`docs/GUIDE_RELEASE.md` dans le projet de l'app).
+3. Connexion Google : suivre `docs/GUIDE_GOOGLE.md` dans le projet de l'app.

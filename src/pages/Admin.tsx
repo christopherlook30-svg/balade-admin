@@ -36,12 +36,15 @@ export function Categories() {
   );
 }
 
-const SETTINGS: { key: string; label: string; kind: 'bool' | 'int'; help: string }[] = [
+const SETTINGS: { key: string; label: string; kind: 'bool' | 'int' | 'text'; help: string }[] = [
   { key: 'ads_enabled', label: 'Publicité activée', kind: 'bool', help: 'Interrupteur général : désactivé, plus aucune annonce n\'est montrée.' },
   { key: 'popup_max_per_day', label: 'Pop-ups par jour et par personne', kind: 'int', help: 'Recommandé : 1.' },
   { key: 'popup_grace_days', label: 'Jours sans pop-up après l\'installation', kind: 'int', help: 'Recommandé : 2.' },
   { key: 'popup_min_places_opened', label: 'Fiches ouvertes avant un pop-up', kind: 'int', help: 'Recommandé : 2.' },
   { key: 'banner_rotation_seconds', label: 'Rotation du bandeau (secondes)', kind: 'int', help: 'Recommandé : 10.' },
+  { key: 'latest_version', label: "Mise à jour de l'app : dernière version", kind: 'text', help: 'Format 1.2.3. Les utilisateurs ayant une version plus ancienne voient un avertissement.' },
+  { key: 'download_url', label: 'Mise à jour : lien de téléchargement', kind: 'text', help: 'Lien https de l\'APK (voir le guide de publication). Vide = aucun avertissement.' },
+  { key: 'release_notes', label: 'Mise à jour : nouveautés (200 caractères)', kind: 'text', help: 'Court texte affiché sous l\'avertissement.' },
 ];
 export function Settings() {
   const { sb } = useApp();
@@ -56,6 +59,14 @@ export function Settings() {
     for (const s of SETTINGS) {
       const v = val(s.key);
       if (v === undefined) continue;
+      if (s.kind === 'text') {
+        const t = String(v).trim();
+        if (s.key === 'latest_version' && !/^\d+\.\d+\.\d+$/.test(t)) throw new Error('La version doit ressembler à 1.2.3.');
+        if (s.key === 'download_url' && t !== '' && !/^https:\/\/\S+$/i.test(t)) throw new Error('Le lien de téléchargement doit commencer par https://');
+        if (s.key === 'release_notes' && t.length > 200) throw new Error('Les nouveautés ne doivent pas dépasser 200 caractères.');
+        check(await sb.from('app_settings').upsert({ key: s.key, value: t, updated_at: new Date().toISOString() }, { onConflict: 'key' }));
+        continue;
+      }
       if (s.kind === 'int' && !(Number.isInteger(Number(v)) && Number(v) >= 0 && Number(v) <= 1000)) throw new Error(`« ${s.label} » doit être un entier entre 0 et 1000.`);
       check(await sb.from('app_settings').upsert({ key: s.key, value: s.kind === 'int' ? Number(v) : Boolean(v), updated_at: new Date().toISOString() }, { onConflict: 'key' }));
     }
@@ -64,13 +75,15 @@ export function Settings() {
   }, 'Réglages enregistrés');
   return (
     <>
-      <h1>Réglages de la publicité</h1>
+      <h1>Réglages</h1>
       <Loading s={list} />
       {list.data && (
         <div className="card">
           {SETTINGS.map((s) => (
             <div key={s.key}>
-              {s.kind === 'bool'
+              {s.kind === 'text'
+                ? <Field label={s.label}><input value={String(val(s.key) ?? '')} onChange={(e) => setDraft({ ...draft, [s.key]: e.target.value })} /></Field>
+                : s.kind === 'bool'
                 ? <label><input type="checkbox" style={{ width: 'auto' }} checked={Boolean(val(s.key))} onChange={(e) => setDraft({ ...draft, [s.key]: e.target.checked })} /> <b>{s.label}</b></label>
                 : <Field label={s.label}><input inputMode="numeric" value={String(val(s.key) ?? '')} onChange={(e) => setDraft({ ...draft, [s.key]: e.target.value })} /></Field>}
               <div className="muted">{s.help}</div>
