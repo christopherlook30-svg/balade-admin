@@ -4,12 +4,16 @@
 1. Lancez `supabase/migrations/0008_premium_profil.sql`.
 2. Prix des offres : table `premium_plans` (Table Editor) : `price`, `days`, `active`.
 
-## 2. PawaPay (compte marchand + jeton API)
-Supabase → Edge Functions → créez `pawapay-checkout` et `pawapay-callback` (collez les fichiers de `supabase/functions/`).
-- `pawapay-callback` : désactivez « Verify JWT ».
-- Secrets (Edge Functions → Secrets) : `PAWAPAY_TOKEN`, `PAWAPAY_BASE` (`https://api.sandbox.pawapay.io` pour tester, `https://api.pawapay.io` en production), `PAWAPAY_COUNTRY` (ex. `CMR`), `RETURN_URL` = `https://christopherlook30-svg.github.io/balade-admin/premium-merci.html`.
-- Dans le tableau de bord PawaPay : URL de rappel des dépôts = `https://<votre-projet>.supabase.co/functions/v1/pawapay-callback`.
-- Testez d'abord en sandbox. Vérifiez dans la doc PawaPay (`/v2/paymentpage`) les champs acceptés pour votre pays et opérateur.
+## 2. Paiement MTN Mobile Money (API Collection)
+Fonctions à créer dans Supabase → Edge Functions (collez les fichiers de `supabase/functions/`) : `momo-checkout` et `momo-status`. Laissez « Verify JWT » activé pour les deux.
+Secrets (Edge Functions → Secrets) :
+- `MOMO_SUBSCRIPTION_KEY` : clé d'abonnement (profil du portail MTN, « Primary key »)
+- `MOMO_API_USER` : identifiant de l'utilisateur d'API
+- `MOMO_API_KEY` : clé d'API
+- Bac à sable : `MOMO_BASE` = `https://sandbox.momodeveloper.mtn.com`, `MOMO_ENV` = `sandbox` (devise EUR automatique).
+- Production (après le Go-Live accepté par MTN) : `MOMO_BASE` = l'adresse de production indiquée par MTN, `MOMO_ENV` = `mtncongo`, `MOMO_CURRENCY` = `XAF`. Vérifiez ces valeurs sur la page Go-Live du portail.
+- Production, format du numéro : le préfixe `242` est ajouté automatiquement. Si MTN refuse les numéros avec le 0 initial, ajoutez `MOMO_STRIP_ZERO` = `1`.
+Les fonctions `pawapay-*` ne sont plus utilisées par l'application.
 
 ## 3. Premium
 Page Premium : offrir une durée (jours, semaines, mois, années, à vie) à un compte, ou la retirer.
