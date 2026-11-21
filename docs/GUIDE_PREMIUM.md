@@ -11,7 +11,7 @@ Secrets (Edge Functions → Secrets) :
 - `MOMO_API_USER` : identifiant de l'utilisateur d'API
 - `MOMO_API_KEY` : clé d'API
 - Bac à sable : `MOMO_BASE` = `https://sandbox.momodeveloper.mtn.com`, `MOMO_ENV` = `sandbox` (devise EUR automatique).
-- Production (après le Go-Live accepté par MTN) : `MOMO_BASE` = l'adresse de production indiquée par MTN, `MOMO_ENV` = `mtncongo`, `MOMO_CURRENCY` = `XAF`. Vérifiez ces valeurs sur la page Go-Live du portail.
+- Production (après le Go-Live accepté par MTN) : `MOMO_BASE` = `https://proxy.momoapi.mtn.com`, `MOMO_ENV` = `mtncongo`, `MOMO_CURRENCY` = `XAF` (valeurs données par la communauté officielle MTN MoMo). La clé d'abonnement de production est différente : elle se trouve dans le profil de `momoapi.mtn.com`, et l'utilisateur et la clé d'API se créent dans le portail partenaire que MTN vous ouvre après validation du dossier.
 - Production, format du numéro : le préfixe `242` est ajouté automatiquement. Si MTN refuse les numéros avec le 0 initial, ajoutez `MOMO_STRIP_ZERO` = `1`.
 Les fonctions `pawapay-*` ne sont plus utilisées par l'application.
 
